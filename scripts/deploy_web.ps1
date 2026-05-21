@@ -14,6 +14,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+$env:Path = "C:\Program Files\Git\cmd;C:\Program Files\Git\bin;" + $env:Path
 $Root = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
 Set-Location $Root
 
@@ -46,8 +47,15 @@ if (-not (Test-Path $geo)) {
 
 # --- 2. Git ---
 Write-Step "Comprobando Git..."
-if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
-    Write-Err "Git no instalado. Descargue: https://git-scm.com/download/win"
+if (-not (Test-Path "C:\Program Files\Git\cmd\git.exe") -and -not (Get-Command git -ErrorAction SilentlyContinue)) {
+    Write-Err "Git no instalado. Ejecute CONFIGURAR_GIT.bat o: winget install Git.Git"
+    Read-Host "Enter para salir"
+    exit 1
+}
+Write-Ok ("Git: " + (git --version))
+
+if (-not (git config --global user.name 2>$null)) {
+    Write-Err "Git sin configurar. Ejecute primero: CONFIGURAR_GIT.bat"
     Read-Host "Enter para salir"
     exit 1
 }
@@ -81,7 +89,16 @@ if (Test-Path "deploy.R") {
     }
 }
 
-Write-Step "Preparando commit..."
+Write-Step "Preparando commit (solo archivos necesarios para la web)..."
+# Quitar del indice carpetas pesadas si se agregaron antes
+$heavyDirs = @(
+    "Vectores_shp_Loreto", "Vectores_shp_San_Martin", "vectores_shp_Cuzco",
+    "ACR_ZI_SHP_cuzco", "defor_acr_zi"
+)
+foreach ($d in $heavyDirs) {
+    if (Test-Path $d) { git rm -r --cached $d 2>$null | Out-Null }
+}
+git rm --cached deploy.R .RData .Rhistory 2>$null | Out-Null
 git add -A
 $status = git status --porcelain
 if (-not $status) {

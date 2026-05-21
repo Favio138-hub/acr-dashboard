@@ -4,31 +4,54 @@ venv/
 __pycache__/
 *.py[cod]
 *.egg-info/
-.pytest_cache/
 
 # Logs locales
 server_log.txt
 diagnostico_log.txt
 *.log
 
+# R local
+.RData
+.Rhistory
+.Rproj.user/
+
 # IDE / OS
 .idea/
 .vscode/
 .DS_Store
 Thumbs.db
+desktop.ini
 
-# Datos pesados RDS (generar cache en build o subir cache pre-exportado)
+# Datos pesados (NO necesarios en Render; usar data/cache/)
 data/**/*.rds
 data/geometrias_acr/
 data/geometrias_zi/
+Vectores_shp_Loreto/
+Vectores_shp_San_Martin/
+vectores_shp_Cuzco/
+ACR_ZI_SHP_cuzco/
+defor_acr_zi/
 
-# Mantener cache web (obligatorio en la nube)
-!data/cache/
-!data/cache/**
+# Archivos shapefile sueltos / locks
+*.shp
+*.dbf
+*.shx
+*.prj
+*.sbn
+*.sbx
+*.cpg
+*.sr.lock
 
-# Secretos R (deploy.R puede tener tokens shinyapps)
-deploy_secrets.R
+# Shiny deploy local (credenciales)
+rsconnect/
+deploy.R
 
 # Entorno
 .env
 .env.*
+
+# Mantener obligatorio para la web
+!data/cache/
+!data/cache/**
+!www/mapas/
+!www/mapas/**
