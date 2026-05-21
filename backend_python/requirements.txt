@@ -1,0 +1,11 @@
+# Dependencias minimas para ejecutar el dashboard (Windows-friendly)
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+pandas>=2.2.0
+numpy>=1.26.0
+
+# Opcionales (solo si usa load_rds_optimized con .rds en Python; el mapa usa cache CSV/GeoJSON)
+# pyreadr>=0.5.0
+# geopandas>=1.0.0
+# shapely>=2.0.0
+# pyproj>=3.6.0

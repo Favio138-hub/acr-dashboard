@@ -1,0 +1,34 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Logs locales
+server_log.txt
+diagnostico_log.txt
+*.log
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Datos pesados RDS (generar cache en build o subir cache pre-exportado)
+data/**/*.rds
+data/geometrias_acr/
+data/geometrias_zi/
+
+# Mantener cache web (obligatorio en la nube)
+!data/cache/
+!data/cache/**
+
+# Secretos R (deploy.R puede tener tokens shinyapps)
+deploy_secrets.R
+
+# Entorno
+.env
+.env.*
