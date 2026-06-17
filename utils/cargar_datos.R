@@ -161,6 +161,17 @@ cargar_geometrias_zi <- function() {
   } else {
     warning("⚠️ No se pudo cargar ZI_ACR.rds para las ZI de Cusco")
   }
+
+  # Fallback: archivos individuales de Cusco (zi_chq.rds, zi_chu.rds, zi_qk.rds)
+  if (is.null(lista_zi$ZI_CHQ)) {
+    lista_zi$ZI_CHQ <- cargar_rds_optimizado("zi_chq.rds", "ZI_CHQ", "geometrias_zi")
+  }
+  if (is.null(lista_zi$ZI_CHU)) {
+    lista_zi$ZI_CHU <- cargar_rds_optimizado("zi_chu.rds", "ZI_CHU", "geometrias_zi")
+  }
+  if (is.null(lista_zi$ZI_QK)) {
+    lista_zi$ZI_QK <- cargar_rds_optimizado("zi_qk.rds", "ZI_QK", "geometrias_zi")
+  }
   
   lista_filtrada <- Filter(Negate(is.null), lista_zi)
   message(sprintf("\n📊 ZIs cargadas: %d de %d esperadas", length(lista_filtrada), 9))

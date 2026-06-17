@@ -32,7 +32,7 @@ from core.serializers import dataframe_to_records
 from services.dashboard_service import datos_para_graficos
 from services.decretos_service import ACR_DECRETOS, obtener_info_decreto
 from core.rds_bridge import load_centroides_deforestacion
-from services.deforestacion_service import resumen_centroides_por_region
+from services.deforestacion_service import filtrar_centroides, resumen_centroides_por_region
 from services.estadisticas_service import estadisticas_a_catalogo
 from services.filtros_config import ACR_OPCIONES_POR_DEPTO
 from services.filtros_service import (
@@ -100,13 +100,18 @@ app.add_middleware(
 
 @app.get("/api/health")
 def health() -> dict[str, Any]:
-    df = _get_centroides_cached()
-    n = len(df)
+    """Respuesta rápida para Render (cold start); no carga el CSV pesado aquí."""
+    cache_csv = _PROJECT_ROOT / "data" / "cache" / "centroides_deforestacion.csv"
+    geo_dir = _PROJECT_ROOT / "data" / "cache" / "geojson"
+    loaded = _APP_STATE.get("_centroides_loaded", False)
+    n = len(_APP_STATE.get("centroides", pd.DataFrame()))
     return {
         "status": "ok",
         "centroides_mapa": n,
-        "mapa_listo": n > 0,
-        "cache_csv": str(_PROJECT_ROOT / "data" / "cache" / "centroides_deforestacion.csv"),
+        "mapa_listo": cache_csv.exists() and cache_csv.stat().st_size > 100,
+        "geojson_ready": (geo_dir / "acr_all.geojson").exists(),
+        "centroides_cargados": loaded,
+        "cache_csv": str(cache_csv),
     }
 
 
@@ -233,13 +238,20 @@ def todos_decretos() -> dict:
 
 
 @app.get("/api/deforestacion/centroides")
-def centroides_endpoint(limit: int = Query(8000, ge=1, le=50000)) -> dict:
+def centroides_endpoint(
+    departamento: str = Query("todos"),
+    ambito: str = Query("acr"),
+    acr: list[str] | None = Query(None),
+    limit: int = Query(0, ge=0, le=100000),
+) -> dict:
     df = _get_centroides_cached()
     if df is None or df.empty:
-        return {"count": 0, "resumen": {}, "data": []}
-    subset = df.head(limit) if len(df) > limit else df
+        return {"count": 0, "returned": 0, "resumen": {}, "data": []}
+    filtered = filtrar_centroides(df, departamento, ambito or "acr", acr)
+    subset = filtered if limit <= 0 else filtered.head(limit)
     return {
         "count": len(df),
+        "filtered": len(filtered),
         "returned": len(subset),
         "resumen": _APP_STATE.get("centroides_resumen", {}),
         "data": dataframe_to_records(subset),

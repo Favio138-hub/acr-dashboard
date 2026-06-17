@@ -113,7 +113,13 @@ const AcrMap = (() => {
   }
 
   async function loadDeforestation(state) {
-    const data = await apiGet("/api/deforestacion/centroides", { limit: 15000 });
+    const params = {
+      departamento: state.departamento,
+      ambito: state.ambito || "acr",
+      acr: state.acrs.length ? state.acrs : undefined,
+      limit: 0,
+    };
+    const data = await apiGet("/api/deforestacion/centroides", params);
     filterPoints(data.data || [], state).forEach((p) => {
       if (!p.lon || !p.lat) return;
       const m = L.circleMarker([p.lat, p.lon], {

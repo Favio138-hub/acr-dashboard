@@ -208,6 +208,14 @@ armonizar_columnas_defo <- function(data, nombre_codigo, tipo = "acr") {
   return(data_armonizado)
 }
 
+resolver_archivo_defo <- function(...) {
+  candidatos <- list(...)
+  for (c in candidatos) {
+    if (file.exists(c)) return(c)
+  }
+  candidatos[[1]]
+}
+
 #  ARCHIVOS DE DEFORESTACIÓN ACR 
 archivos_defo_acr <- list(
   # LORETO
@@ -218,7 +226,7 @@ archivos_defo_acr <- list(
   
   # SAN MARTÍN
   ACR_BSM = "data/deforestacion_ACR_BSM.rds",
-  ACR_CE = "data/deforestacion_ACR_CE.rds",
+  ACR_CE = resolver_archivo_defo("data/deforestacion_ACR_CE.rds", "data/datadeforestacion_ACR_CE.rds"),
   
   # CUSCO
   ACR_CHQ = "data/deforestacion_ACR_CHQ.rds",

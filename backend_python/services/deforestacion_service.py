@@ -12,6 +12,44 @@ from core.rds_bridge import load_centroides_deforestacion
 
 logger = logging.getLogger(__name__)
 
+DEPTO_CODIGOS = {
+    "loreto": {
+        "ACR_AA", "ACR_ANPCH", "ACR_MK", "ACR_CTT",
+        "ZI_AA", "ZI_ANPCH", "ZI_MK", "ZI_CTT",
+    },
+    "san_martin": {"ACR_BSM", "ACR_CE", "ZI_BSM", "ZI_CE"},
+    "cusco": {"ACR_CHQ", "ACR_CHU", "ACR_QK", "ZI_CHQ", "ZI_CHU", "ZI_QK"},
+}
+
+
+def filtrar_centroides(
+    centroides_df: pd.DataFrame,
+    departamento: str = "todos",
+    ambito: str = "acr",
+    acr_filtros: list[str] | None = None,
+) -> pd.DataFrame:
+    """Filtra puntos del mapa según filtros activos (sin truncar por límite arbitrario)."""
+    if centroides_df.empty:
+        return centroides_df
+
+    df = centroides_df.copy()
+    amb = ambito or "acr"
+    if amb == "acr":
+        df = df[df["tipo"] == "acr"]
+    elif amb == "zi":
+        df = df[df["tipo"] == "zi"]
+
+    depto = departamento or "todos"
+    if depto != "todos":
+        allowed = DEPTO_CODIGOS.get(depto, set())
+        df = df[df["codigo"].isin(allowed)]
+
+    if acr_filtros:
+        allowed = set(acr_filtros) | {c.replace("ACR_", "ZI_", 1) for c in acr_filtros}
+        df = df[df["codigo"].isin(allowed)]
+
+    return df.dropna(subset=["lon", "lat"])
+
 
 def load_deforestacion_layers() -> pd.DataFrame:
     """Compatibilidad: devuelve centroides (el mapa usa puntos, no polígonos completos)."""
@@ -45,7 +83,7 @@ def resumen_centroides_por_region(centroides_df: pd.DataFrame) -> dict:
     df = centroides_df
 
     def _count(tipo: str, pattern: str) -> int:
-        mask = (df["tipo"] == tipo) & df["codigo"].str.contains(pattern, regex=True)
+        mask = (df["tipo"] == tipo) & df["codigo"].str.contains(pattern, regex=True, na=False)
         return int(mask.sum())
 
     return {

@@ -54,16 +54,27 @@ armonizar_columnas_defo <- function(data, nombre_codigo, tipo = "acr") {
   st_sf(data_armonizado, geometry = st_geometry(data))
 }
 
+resolver_archivo_defo <- function(...) {
+  candidatos <- list(...)
+  for (c in candidatos) {
+    if (file.exists(c)) return(c)
+  }
+  candidatos[[1]]
+}
+
 archivos_defo_acr <- list(
-  ACR_AA = file.path(root, "data/deforestacion_ACR_AA.rds"),
-  ACR_ANPCH = file.path(root, "data/deforestacion_ACR_ANPCH.rds"),
-  ACR_CTT = file.path(root, "data/deforestacion_ACR_CTT.rds"),
-  ACR_MK = file.path(root, "data/deforestacion_ACR_MK.rds"),
-  ACR_BSM = file.path(root, "data/deforestacion_ACR_BSM.rds"),
-  ACR_CE = file.path(root, "data/deforestacion_ACR_CE.rds"),
-  ACR_CHQ = file.path(root, "data/deforestacion_ACR_CHQ.rds"),
-  ACR_CHU = file.path(root, "data/deforestacion_ACR_CHU.rds"),
-  ACR_QK = file.path(root, "data/deforestacion_ACR_QK.rds")
+  ACR_AA = resolver_archivo_defo(file.path(root, "data/deforestacion_ACR_AA.rds")),
+  ACR_ANPCH = resolver_archivo_defo(file.path(root, "data/deforestacion_ACR_ANPCH.rds")),
+  ACR_CTT = resolver_archivo_defo(file.path(root, "data/deforestacion_ACR_CTT.rds")),
+  ACR_MK = resolver_archivo_defo(file.path(root, "data/deforestacion_ACR_MK.rds")),
+  ACR_BSM = resolver_archivo_defo(file.path(root, "data/deforestacion_ACR_BSM.rds")),
+  ACR_CE = resolver_archivo_defo(
+    file.path(root, "data/deforestacion_ACR_CE.rds"),
+    file.path(root, "data/datadeforestacion_ACR_CE.rds")
+  ),
+  ACR_CHQ = resolver_archivo_defo(file.path(root, "data/deforestacion_ACR_CHQ.rds")),
+  ACR_CHU = resolver_archivo_defo(file.path(root, "data/deforestacion_ACR_CHU.rds")),
+  ACR_QK = resolver_archivo_defo(file.path(root, "data/deforestacion_ACR_QK.rds"))
 )
 
 archivos_defo_zi <- list(

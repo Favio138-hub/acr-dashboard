@@ -13,6 +13,91 @@ body {
   color: #333;
 }
 
+.app-loading {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(160deg, #e8f5f1 0%, #ecf0f1 45%, #dfe6e9 100%);
+  transition: opacity 0.35s ease;
+}
+.app-loading.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.app-loading-card {
+  text-align: center;
+  padding: 2.5rem 2rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 109, 91, 0.15);
+  max-width: 420px;
+  width: 90%;
+}
+.app-loading-card h2 {
+  margin: 0.75rem 0 0.5rem;
+  color: var(--primary);
+  font-size: 1.35rem;
+}
+.app-loading-card p {
+  margin: 0;
+  color: #666;
+  font-size: 0.95rem;
+}
+.app-loading-icon {
+  font-size: 2.5rem;
+  color: var(--primary);
+}
+.app-loading-bar {
+  margin-top: 1.25rem;
+  height: 4px;
+  background: #e0e0e0;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.app-loading-bar span {
+  display: block;
+  height: 100%;
+  width: 40%;
+  background: var(--primary);
+  border-radius: 2px;
+  animation: loading-slide 1.4s ease-in-out infinite;
+}
+@keyframes loading-slide {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(350%); }
+}
+
+.offline-banner {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: linear-gradient(160deg, #e8f5f1 0%, #ecf0f1 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+}
+.offline-banner-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 480px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.1);
+}
+.offline-banner-card h2 {
+  margin: 0 0 12px;
+  color: #333;
+}
+.offline-banner-card p {
+  margin: 0;
+  color: #555;
+  line-height: 1.6;
+}
+
 .navbar {
   display: flex;
   align-items: center;

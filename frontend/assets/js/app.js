@@ -26,7 +26,7 @@ function buildQuery(params) {
   return p.toString() ? `?${p}` : "";
 }
 
-async function apiGet(path, params = {}, retries = 8) {
+async function apiGet(path, params = {}, retries = 45) {
   let lastErr;
   for (let i = 0; i < retries; i++) {
     try {
@@ -35,10 +35,60 @@ async function apiGet(path, params = {}, retries = 8) {
       return res.json();
     } catch (err) {
       lastErr = err;
-      if (i < retries - 1) await new Promise((r) => setTimeout(r, 750));
+      const delay = Math.min(750 + i * 200, 3000);
+      if (i < retries - 1) await new Promise((r) => setTimeout(r, delay));
     }
   }
   throw lastErr;
+}
+
+function showLoading(message) {
+  const overlay = qs("#app-loading");
+  const status = qs("#loading-status");
+  if (overlay) overlay.classList.remove("hidden");
+  if (status && message) status.textContent = message;
+}
+
+function hideLoading() {
+  qs("#app-loading")?.classList.add("hidden");
+}
+
+function showOfflineBanner() {
+  if (qs("#server-offline-banner")) return;
+  const isRemote = !["localhost", "127.0.0.1"].includes(window.location.hostname);
+  const box = document.createElement("div");
+  box.id = "server-offline-banner";
+  box.className = "offline-banner";
+  box.innerHTML = `<div class="offline-banner-card">
+      <i class="fas fa-server" style="font-size:2.5rem;color:#006D5B;margin-bottom:12px"></i>
+      <h2>Servidor iniciando</h2>
+      <p id="offline-retry-msg">${
+        isRemote
+          ? "El servicio en la nube puede tardar <strong>30–60 segundos</strong> en despertar (plan gratuito). Espere un momento…"
+          : "Ejecute <strong>iniciar.bat</strong> y espere <em>Uvicorn running</em> en la ventana del servidor."
+      }</p>
+      <button type="button" id="btn-retry-load" class="btn btn-primary" style="margin-top:16px">
+        <i class="fas fa-redo"></i> Reintentar
+      </button>
+      ${isRemote ? "" : `<p style="opacity:.8;font-size:14px;margin-top:12px">Luego abra: <a href="http://127.0.0.1:8000">http://127.0.0.1:8000</a></p>`}
+    </div>`;
+  document.body.appendChild(box);
+  qs("#btn-retry-load")?.addEventListener("click", () => {
+    box.remove();
+    bootstrapDashboard();
+  });
+}
+
+async function bootstrapDashboard() {
+  showLoading("Conectando con el servidor…");
+  await apiGet("/api/health");
+  showLoading("Cargando filtros y datos del mapa…");
+  await loadAcrOptions();
+  Reportes.init();
+  Tendencias.init();
+  Modals.bindRegionCards();
+  await refreshDashboard();
+  hideLoading();
 }
 
 document.querySelectorAll(".nav-tabs button").forEach((btn) => {
@@ -227,21 +277,10 @@ qs("#btn-limpiar").addEventListener("click", async () => {
 
 (async function init() {
   try {
-    await loadAcrOptions();
-    Reportes.init();
-    Tendencias.init();
-    Modals.bindRegionCards();
-    await refreshDashboard();
+    await bootstrapDashboard();
   } catch (err) {
     console.error(err);
-    const box = document.createElement("div");
-    box.id = "server-offline-banner";
-    box.style.cssText =
-      "position:fixed;inset:0;z-index:99999;background:#1a1a2e;color:#fff;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;font-family:Segoe UI,sans-serif";
-    box.innerHTML = `<div><h2 style="margin:0 0 12px">Servidor no disponible</h2>
-      <p>Ejecute <strong>iniciar.bat</strong> y espere el mensaje <em>Uvicorn running</em> en la ventana negra.</p>
-      <p>Luego abra: <a href="http://127.0.0.1:8000" style="color:#7fdbff">http://127.0.0.1:8000</a></p>
-      <p style="opacity:.8;font-size:14px">Si falla, envíe el archivo <strong>server_log.txt</strong></p></div>`;
-    document.body.appendChild(box);
+    hideLoading();
+    showOfflineBanner();
   }
 })();
