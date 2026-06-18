@@ -270,24 +270,96 @@ body {
 .region-cards {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-  margin-top: 2rem;
+  gap: 1.25rem;
+  margin-top: 0.75rem;
 }
 @media (max-width: 992px) { .region-cards { grid-template-columns: 1fr; } }
 
-.region-card {
+.region-insights-root { margin-top: 0.5rem; margin-bottom: 2rem; }
+.region-insights-header { margin-bottom: 0.75rem; }
+.region-insights-meta {
+  margin: 0;
+  font-size: 12px;
+  color: #7f8c8d;
+  font-weight: 500;
+}
+.region-insights-meta i { margin-right: 6px; color: #1a4d2e; }
+.region-insights-error {
+  color: #c0392b;
+  font-size: 14px;
+  padding: 1rem;
+  background: #fdecea;
   border-radius: 8px;
-  padding: 1.25rem;
-  min-height: 280px;
+}
+
+.region-card {
+  border-radius: 12px;
+  padding: 1.35rem 1.35rem 1rem;
+  min-height: 300px;
   position: relative;
   background: #fff;
-  box-shadow: 0 2px 8px rgba(0,0,0,.1);
-  transition: transform .3s, box-shadow .3s;
+  border: 1px solid #e8ece9;
+  border-top: 4px solid var(--region-accent, #1a4d2e);
+  box-shadow: 0 4px 16px rgba(26, 77, 46, 0.06);
+  transition: transform .25s ease, box-shadow .25s ease;
   cursor: default;
+  display: flex;
+  flex-direction: column;
 }
+.region-card-loreto { background: linear-gradient(160deg, #ffffff 0%, #fffef8 100%); }
+.region-card-sanmartin { background: linear-gradient(160deg, #ffffff 0%, #fffaf3 100%); }
+.region-card-cusco { background: linear-gradient(160deg, #ffffff 0%, #f4fff7 100%); }
 .region-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 8px 24px rgba(0,0,0,.2);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 28px rgba(26, 77, 46, 0.12);
+}
+.region-card-skeleton {
+  min-height: 300px;
+  background: linear-gradient(90deg, #f4f6f5 25%, #ecefed 50%, #f4f6f5 75%);
+  background-size: 200% 100%;
+  animation: region-shimmer 1.2s infinite;
+  border-top-color: #ddd;
+}
+@keyframes region-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.region-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  padding: 5px 10px;
+  border-radius: 999px;
+  color: #fff;
+  background: var(--region-accent, #1a4d2e);
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+.region-card-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0 0 14px;
+  padding-right: 72px;
+}
+.region-icon-wrap {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 18px;
+}
+.region-card-title {
+  margin: 0;
+  color: #1a4d2e;
+  font-size: 1.05rem;
+  line-height: 1.35;
+  font-weight: 700;
 }
 .region-desc {
   font-size: 14px;

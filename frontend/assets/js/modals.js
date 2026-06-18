@@ -215,7 +215,8 @@ const Modals = (() => {
   };
 
   function showRegion(region) {
-    const r = REGION_MODALS[region];
+    const dynamic = typeof RegionInsights !== "undefined" ? RegionInsights.getModal(region) : null;
+    const r = dynamic || REGION_MODALS[region];
     if (!r) return;
     const statsHtml = `<div class="modal-region-stats">${r.stats
       .map(

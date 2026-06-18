@@ -111,41 +111,7 @@
         </div>
 
         <h5 class="section-title"><i class="fas fa-lightbulb"></i> Datos Relevantes por Región</h5>
-        <div class="region-cards">
-          <div class="region-card region-card-loreto" style="border-top:4px solid #f1c40f;background:linear-gradient(135deg,#ffffff 0%,#fffef5 100%)">
-            <span class="region-badge" style="background:linear-gradient(135deg,#f1c40f,#f39c12)">LORETO</span>
-            <h4 style="color:#1a4d2e;line-height:1.4"><i class="fas fa-fire" style="color:#e74c3c"></i> Frentes Activos de<br/>Deforestación</h4>
-            <p class="region-desc">El <strong>corredor Iquitos-Nauta</strong> concentra el mayor número de alertas, con <strong>8,500+ hectáreas</strong> deforestadas en la última década. La agricultura migratoria en ciclos de 3-5 años es el patrón dominante.</p>
-            <ul class="region-facts">
-              <li><i class="fas fa-map-pin" style="color:#e74c3c"></i> Zona crítica: Eje vial Iquitos-Nauta</li>
-              <li><i class="fas fa-chart-line" style="color:#f39c12"></i> Tendencia: +18.6% última década</li>
-              <li><i class="fas fa-tree" style="color:#27ae60"></i> Impacto: 4 ACRs con presión alta</li>
-            </ul>
-            <div class="region-link-wrap"><button type="button" class="region-link" data-region="loreto">Ver análisis completo <i class="fas fa-arrow-right"></i></button></div>
-          </div>
-          <div class="region-card region-card-sanmartin" style="border-top:4px solid #f8c471;background:linear-gradient(135deg,#ffffff 0%,#fff9f0 100%)">
-            <span class="region-badge" style="background:linear-gradient(135deg,#f8c471,#f39c12)">SAN MARTÍN</span>
-            <h4 style="color:#1a4d2e;line-height:1.4"><i class="fas fa-exclamation-triangle" style="color:#f39c12"></i> Presión en Bordes<br/>de ACRs</h4>
-            <p class="region-desc">Incremento notable <strong>post-2018</strong> en los límites de <strong>Cordillera Escalera</strong>, coincidiendo con mejoras en infraestructura vial. Expansión urbana y caficultura son las causas principales.</p>
-            <ul class="region-facts">
-              <li><i class="fas fa-fire-alt" style="color:#e74c3c"></i> Incendios forestales 2023: 260+ ha</li>
-              <li><i class="fas fa-city" style="color:#95a5a6"></i> Causa #1: Expansión urbana (40%)</li>
-              <li><i class="fas fa-coffee" style="color:#8b4513"></i> Causa #2: Cultivos permanentes (35%)</li>
-            </ul>
-            <div class="region-link-wrap"><button type="button" class="region-link" data-region="sanmartin">Ver análisis completo <i class="fas fa-arrow-right"></i></button></div>
-          </div>
-          <div class="region-card region-card-cusco" style="border-top:4px solid #5cb85c;background:linear-gradient(135deg,#ffffff 0%,#f0fff4 100%)">
-            <span class="region-badge" style="background:linear-gradient(135deg,#5cb85c,#4cae4c)">CUSCO</span>
-            <h4 style="color:#1a4d2e;line-height:1.4"><i class="fas fa-chart-line" style="color:#27ae60"></i> Reducción de<br/>Deforestación</h4>
-            <p class="region-desc"><strong>Buenas noticias:</strong> Cusco muestra una <strong>reducción del 15%</strong> en deforestación desde 2020. Parches pequeños (0.5-2 ha) en valles cultivados, con baja presión comparada con selva baja.</p>
-            <ul class="region-facts">
-              <li><i class="fas fa-check-circle" style="color:#27ae60"></i> Tendencia positiva: -15% desde 2020</li>
-              <li><i class="fas fa-seedling" style="color:#27ae60"></i> Patrón: Parches dispersos &lt; 2 ha</li>
-              <li><i class="fas fa-mountain" style="color:#3498db"></i> Contexto: Prácticas agrícolas tradicionales</li>
-            </ul>
-            <div class="region-link-wrap"><button type="button" class="region-link" data-region="cusco">Ver análisis completo <i class="fas fa-arrow-right"></i></button></div>
-          </div>
-        </div>
+        <div id="region-insights-root" class="region-insights-root" aria-live="polite"></div>
       </main>
     </div>
     <footer class="footer-simple">
@@ -325,6 +291,7 @@
   <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
   <script src="/assets/js/map.js"></script>
   <script src="/assets/js/modals.js"></script>
+  <script src="/assets/js/region-insights.js"></script>
   <script src="/assets/js/reportes.js"></script>
   <script src="/assets/js/tendencias.js"></script>
   <script src="/assets/js/app.js"></script>

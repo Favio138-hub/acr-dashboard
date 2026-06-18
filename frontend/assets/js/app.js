@@ -91,7 +91,7 @@ async function bootstrapDashboard() {
   initYearFilters();
   await loadAcrOptions();
   Tendencias.init();
-  Modals.bindRegionCards();
+  await RegionInsights.load();
   await refreshDashboard();
   hideLoading();
 }

@@ -30,6 +30,7 @@ from fastapi.staticfiles import StaticFiles
 
 from core.serializers import dataframe_to_records
 from services.centroides_stats_service import graficos_desde_centroides, kpis_desde_centroides
+from services.region_insights_service import region_insights
 from services.dashboard_service import datos_para_graficos
 from services.decretos_service import ACR_DECRETOS, obtener_info_decreto
 from core.rds_bridge import load_centroides_deforestacion
@@ -237,6 +238,12 @@ def decreto_endpoint(codigo: str) -> dict:
 @app.get("/api/decretos")
 def todos_decretos() -> dict:
     return {"data": dataframe_to_records(ACR_DECRETOS)}
+
+
+@app.get("/api/region-insights")
+def region_insights_endpoint() -> dict:
+    cent = _get_centroides_cached()
+    return region_insights(cent)
 
 
 @app.get("/api/deforestacion/centroides")
