@@ -56,6 +56,13 @@
         </select>
         <label for="nombre_acr">Nombre ACR (selección múltiple):</label>
         <select id="nombre_acr" multiple></select>
+        <label for="anno_desde"><i class="fas fa-calendar-alt"></i> Año de deforestación (mapa):</label>
+        <div class="year-range-row">
+          <select id="anno_desde" aria-label="Año desde"></select>
+          <span class="year-range-sep">–</span>
+          <select id="anno_hasta" aria-label="Año hasta"></select>
+        </div>
+        <p id="anno-range-label" class="year-range-hint">Mostrando 2001 – 2024</p>
         <div id="filter-info" class="filter-info"></div>
         <button type="button" id="btn-limpiar" class="btn btn-warning btn-block hidden"><i class="fas fa-eraser"></i> Limpiar Filtros</button>
       </aside>

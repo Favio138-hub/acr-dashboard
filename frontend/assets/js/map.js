@@ -109,6 +109,14 @@ const AcrMap = (() => {
       const allowed = new Set([...state.acrs, ...state.acrs.map((c) => c.replace("ACR_", "ZI_"))]);
       pts = pts.filter((p) => allowed.has(p.codigo));
     }
+    if (state.annoDesde != null && state.annoHasta != null) {
+      const lo = Math.min(state.annoDesde, state.annoHasta);
+      const hi = Math.max(state.annoDesde, state.annoHasta);
+      pts = pts.filter((p) => {
+        const y = parseInt(p.anno, 10);
+        return !Number.isNaN(y) && y >= lo && y <= hi;
+      });
+    }
     return pts;
   }
 
@@ -117,10 +125,16 @@ const AcrMap = (() => {
       departamento: state.departamento,
       ambito: state.ambito || "acr",
       acr: state.acrs.length ? state.acrs : undefined,
+      anno_desde: state.annoDesde,
+      anno_hasta: state.annoHasta,
       limit: 0,
     };
     const data = await apiGet("/api/deforestacion/centroides", params);
-    filterPoints(data.data || [], state).forEach((p) => {
+    const points = filterPoints(data.data || [], state);
+    if (!points.length) {
+      console.info("Sin puntos de deforestación para los filtros activos (incl. año).");
+    }
+    points.forEach((p) => {
       if (!p.lon || !p.lat) return;
       const m = L.circleMarker([p.lat, p.lon], {
         radius: 5,

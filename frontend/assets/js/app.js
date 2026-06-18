@@ -5,7 +5,12 @@ const state = {
   departamento: "todos",
   ambito: "",
   acrs: [],
+  annoDesde: 2001,
+  annoHasta: 2024,
 };
+
+const ANNO_MIN = 2001;
+const ANNO_MAX = 2024;
 
 const fmt = (n) =>
   new Intl.NumberFormat("es-PE", { maximumFractionDigits: 0 }).format(Math.round(n || 0));
@@ -83,6 +88,7 @@ async function bootstrapDashboard() {
   showLoading("Conectando con el servidor…");
   await apiGet("/api/health");
   showLoading("Cargando filtros y datos del mapa…");
+  initYearFilters();
   await loadAcrOptions();
   Reportes.init();
   Tendencias.init();
@@ -102,6 +108,49 @@ document.querySelectorAll(".nav-tabs button").forEach((btn) => {
     }
   });
 });
+
+function initYearFilters() {
+  const desde = qs("#anno_desde");
+  const hasta = qs("#anno_hasta");
+  if (!desde || !hasta) return;
+  for (let y = ANNO_MIN; y <= ANNO_MAX; y++) {
+    const o1 = document.createElement("option");
+    o1.value = String(y);
+    o1.textContent = String(y);
+    desde.appendChild(o1);
+    const o2 = document.createElement("option");
+    o2.value = String(y);
+    o2.textContent = String(y);
+    hasta.appendChild(o2);
+  }
+  desde.value = String(state.annoDesde);
+  hasta.value = String(state.annoHasta);
+  syncYearFilterLabel();
+}
+
+function readYearFilters() {
+  let desde = parseInt(qs("#anno_desde")?.value || ANNO_MIN, 10);
+  let hasta = parseInt(qs("#anno_hasta")?.value || ANNO_MAX, 10);
+  if (desde > hasta) [desde, hasta] = [hasta, desde];
+  state.annoDesde = desde;
+  state.annoHasta = hasta;
+  if (qs("#anno_desde")) qs("#anno_desde").value = String(desde);
+  if (qs("#anno_hasta")) qs("#anno_hasta").value = String(hasta);
+  syncYearFilterLabel();
+}
+
+function syncYearFilterLabel() {
+  const label = qs("#anno-range-label");
+  if (!label) return;
+  const full = state.annoDesde === ANNO_MIN && state.annoHasta === ANNO_MAX;
+  label.textContent = full
+    ? `Mostrando ${ANNO_MIN} – ${ANNO_MAX}`
+    : `Mostrando deforestación ${state.annoDesde} – ${state.annoHasta}`;
+}
+
+function isYearFilterActive() {
+  return state.annoDesde !== ANNO_MIN || state.annoHasta !== ANNO_MAX;
+}
 
 async function loadAcrOptions() {
   const data = await apiGet("/api/filtros/opciones-acr", { departamento: state.departamento });
@@ -126,7 +175,7 @@ function getSelectedAcrs() {
 
 function updateFilterInfo() {
   const info = qs("#filter-info");
-  const has = state.ambito || state.acrs.length;
+  const has = state.ambito || state.acrs.length || isYearFilterActive();
   if (!has) {
     info.classList.remove("visible");
     return;
@@ -137,7 +186,10 @@ function updateFilterInfo() {
       state.ambito === "acr" ? "ACR" : state.ambito === "zi" ? "Zona de Influencia" : "ACR + ZI";
     html += `<small>Ámbito: ${t}</small><br>`;
   }
-  if (state.acrs.length) html += `<small>ACRs: ${state.acrs.length}</small>`;
+  if (state.acrs.length) html += `<small>ACRs: ${state.acrs.length}</small><br>`;
+  if (isYearFilterActive()) {
+    html += `<small>Años (mapa): ${state.annoDesde}–${state.annoHasta}</small>`;
+  }
   info.innerHTML = html;
   info.classList.add("visible");
   qs("#btn-limpiar").classList.toggle("hidden", !has);
@@ -263,13 +315,27 @@ qs("#nombre_acr").addEventListener("change", () => {
   refreshDashboard();
 });
 
+function onYearFilterChange() {
+  readYearFilters();
+  updateFilterInfo();
+  AcrMap.refresh(state);
+}
+
+qs("#anno_desde")?.addEventListener("change", onYearFilterChange);
+qs("#anno_hasta")?.addEventListener("change", onYearFilterChange);
+
 qs("#btn-limpiar").addEventListener("click", async () => {
   qs("#departamento").value = "todos";
   qs("#ambito").value = "";
   qs("#nombre_acr").selectedIndex = -1;
+  qs("#anno_desde").value = String(ANNO_MIN);
+  qs("#anno_hasta").value = String(ANNO_MAX);
   state.departamento = "todos";
   state.ambito = "";
   state.acrs = [];
+  state.annoDesde = ANNO_MIN;
+  state.annoHasta = ANNO_MAX;
+  syncYearFilterLabel();
   await loadAcrOptions();
   updateFilterInfo();
   await refreshDashboard();

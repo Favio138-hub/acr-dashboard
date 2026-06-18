@@ -27,6 +27,8 @@ def filtrar_centroides(
     departamento: str = "todos",
     ambito: str = "acr",
     acr_filtros: list[str] | None = None,
+    anno_desde: int | None = None,
+    anno_hasta: int | None = None,
 ) -> pd.DataFrame:
     """Filtra puntos del mapa según filtros activos (sin truncar por límite arbitrario)."""
     if centroides_df.empty:
@@ -47,6 +49,14 @@ def filtrar_centroides(
     if acr_filtros:
         allowed = set(acr_filtros) | {c.replace("ACR_", "ZI_", 1) for c in acr_filtros}
         df = df[df["codigo"].isin(allowed)]
+
+    if anno_desde is not None or anno_hasta is not None:
+        years = pd.to_numeric(df.get("anno"), errors="coerce")
+        lo = anno_desde if anno_desde is not None else int(years.min())
+        hi = anno_hasta if anno_hasta is not None else int(years.max())
+        if lo > hi:
+            lo, hi = hi, lo
+        df = df[years.between(lo, hi, inclusive="both")]
 
     return df.dropna(subset=["lon", "lat"])
 

@@ -242,12 +242,21 @@ def centroides_endpoint(
     departamento: str = Query("todos"),
     ambito: str = Query("acr"),
     acr: list[str] | None = Query(None),
+    anno_desde: int | None = Query(None, ge=2001, le=2030),
+    anno_hasta: int | None = Query(None, ge=2001, le=2030),
     limit: int = Query(0, ge=0, le=100000),
 ) -> dict:
     df = _get_centroides_cached()
     if df is None or df.empty:
         return {"count": 0, "returned": 0, "resumen": {}, "data": []}
-    filtered = filtrar_centroides(df, departamento, ambito or "acr", acr)
+    filtered = filtrar_centroides(
+        df,
+        departamento,
+        ambito or "acr",
+        acr,
+        anno_desde=anno_desde,
+        anno_hasta=anno_hasta,
+    )
     subset = filtered if limit <= 0 else filtered.head(limit)
     return {
         "count": len(df),
