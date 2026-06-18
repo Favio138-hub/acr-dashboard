@@ -106,6 +106,40 @@ cargar_capa <- function(nombre, archivo, tipo) {
   })
 }
 
+resolver_ruta <- function(...) {
+  for (rel in list(...)) {
+    p <- if (grepl("^data/", rel)) file.path(root, rel) else rel
+    if (file.exists(p)) return(p)
+  }
+  NA_character_
+}
+
+extraer_defo_zi_espacial <- function(codigo_zi, rutas_defo, ruta_zi_geom) {
+  defo_path <- do.call(resolver_ruta, as.list(rutas_defo))
+  zi_path <- resolver_ruta(ruta_zi_geom)
+  if (is.na(defo_path) || is.na(zi_path)) {
+    message(sprintf("  omitido %s (archivo no encontrado)", codigo_zi))
+    return(invisible(NULL))
+  }
+  tryCatch({
+    defo <- readRDS(defo_path)
+    zi_geom <- readRDS(zi_path)
+    sf_use_s2(FALSE)
+    defo <- st_make_valid(st_transform(defo, 4326))
+    zi_geom <- st_make_valid(st_transform(zi_geom, 4326))
+    hits <- lengths(st_intersects(defo, zi_geom, sparse = TRUE)) > 0
+    if (!any(hits)) {
+      message(sprintf("  %s: 0 poligonos en ZI", codigo_zi))
+      return(invisible(NULL))
+    }
+    layer <- armonizar_columnas_defo(defo[hits, ], codigo_zi, "zi")
+    capas[[codigo_zi]] <<- layer
+    message(sprintf("  OK %s (interseccion ZI): %d poligonos", codigo_zi, nrow(layer)))
+  }, error = function(e) {
+    message(sprintf("  ERROR %s: %s", codigo_zi, e$message))
+  })
+}
+
 message("Cargando deforestacion ACR...")
 for (nm in names(archivos_defo_acr)) {
   cargar_capa(nm, archivos_defo_acr[[nm]], "acr")
@@ -114,6 +148,19 @@ for (nm in names(archivos_defo_acr)) {
 message("Cargando deforestacion ZI (Cusco)...")
 for (nm in names(archivos_defo_zi)) {
   cargar_capa(nm, archivos_defo_zi[[nm]], "zi")
+}
+
+message("Extrayendo deforestacion ZI Loreto y San Martin (interseccion espacial)...")
+pares_zi_espacial <- list(
+  list(cod = "ZI_AA", defo = c("data/deforestacion_ACR_AA.rds"), zi = "data/geometrias_zi/zi_aa.rds"),
+  list(cod = "ZI_ANPCH", defo = c("data/deforestacion_ACR_ANPCH.rds"), zi = "data/geometrias_zi/zi_anpch.rds"),
+  list(cod = "ZI_CTT", defo = c("data/deforestacion_ACR_CTT.rds"), zi = "data/geometrias_zi/zi_ctt.rds"),
+  list(cod = "ZI_MK", defo = c("data/deforestacion_ACR_MK.rds"), zi = "data/geometrias_zi/zi_mk.rds"),
+  list(cod = "ZI_BSM", defo = c("data/datadeforestacion_ACR_CE.rds", "data/deforestacion_ACR_CE.rds"), zi = "data/geometrias_zi/ZI_Bosques_de_Shunté_y_Mishollo.rds"),
+  list(cod = "ZI_CE", defo = c("data/deforestacion_ACR_BSM.rds"), zi = "data/geometrias_zi/ZI_Cordillera_Escalera.rds")
+)
+for (par in pares_zi_espacial) {
+  extraer_defo_zi_espacial(par$cod, par$defo, par$zi)
 }
 
 if (length(capas) == 0) {
