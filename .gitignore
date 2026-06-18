@@ -8,6 +8,7 @@ __pycache__/
 # Logs locales
 server_log.txt
 diagnostico_log.txt
+logs/
 *.log
 
 # R local
