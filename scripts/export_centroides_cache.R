@@ -137,48 +137,66 @@ cargar_shp_loreto <- function(rel_shp, codigo_acr, codigo_zi) {
   })
 }
 
-cargar_shp_san_martin <- function() {
+leer_objectids_rds <- function(archivo) {
+  if (!file.exists(archivo)) return(integer(0))
+  d <- readRDS(archivo)
+  if (!"OBJECTID" %in% names(d)) return(integer(0))
+  as.integer(d$OBJECTID)
+}
+
+cargar_sm_zi_desde_rds <- function() {
+  # Archivos con nombres invertidos (ver global.R):
+  # deforestacion_ACR_BSM.rds -> territorio CE (anp_codi ACR01) = ZI Cordillera Escalera
+  # datadeforestacion_ACR_CE.rds -> territorio BSM (anp_codi ACR21) = ZI Bosques de Shunté
+  rds_zi_ce <- resolver_archivo_defo(
+    file.path(root, "data/deforestacion_ACR_BSM.rds")
+  )
+  rds_zi_bsm <- resolver_archivo_defo(
+    file.path(root, "data/datadeforestacion_ACR_CE.rds"),
+    file.path(root, "data/deforestacion_ACR_CE.rds")
+  )
+  cargar_capa_rds("ZI_CE", rds_zi_ce, "zi")
+  cargar_capa_rds("ZI_BSM", rds_zi_bsm, "zi")
+}
+
+cargar_sm_acr_bsm_desde_rds <- function() {
+  rds_bsm <- resolver_archivo_defo(
+    file.path(root, "data/datadeforestacion_ACR_CE.rds"),
+    file.path(root, "data/deforestacion_ACR_CE.rds")
+  )
+  cargar_capa_rds("ACR_BSM", rds_bsm, "acr")
+}
+
+cargar_sm_acr_desde_shapefile <- function() {
   shp_path <- resolver_ruta("Vectores_shp_San_Martin/MonitoreoDeforestacionAcumulado_ACR_SM.shp")
   if (is.na(shp_path)) {
-    message("  omitido San Martin (shapefile no encontrado)")
+    message("  omitido San Martin ACR (shapefile no encontrado)")
     return(invisible(NULL))
   }
   tryCatch({
     data <- st_read(shp_path, quiet = TRUE)
     sf_use_s2(FALSE)
     data <- st_make_valid(st_transform(data, 4326))
-    # ACR01 = Cordillera Escalera, ACR21 = Bosques de Shunté y Mishollo
-    mapa <- c(ACR01 = "ACR_CE", ACR21 = "ACR_BSM")
-    for (anp in names(mapa)) {
-      sub <- data[data$anp_codi == anp, ]
-      if (nrow(sub) == 0) next
-      codigo <- mapa[[anp]]
-      layer <- armonizar_columnas_defo(sub, codigo, "acr")
-      agregar_capa(codigo, layer)
-      message(sprintf("  OK %s (%s): %d poligonos", codigo, anp, nrow(layer)))
-    }
-  }, error = function(e) {
-    message(sprintf("  ERROR San Martin: %s", e$message))
-  })
-}
 
-extraer_zi_sm_espacial <- function(codigo_zi, codigo_acr, ruta_zi_geom) {
-  if (!codigo_acr %in% names(capas)) return(invisible(NULL))
-  zi_path <- resolver_ruta(ruta_zi_geom)
-  if (is.na(zi_path)) return(invisible(NULL))
-  tryCatch({
-    defo <- capas[[codigo_acr]]
-    zi_geom <- st_make_valid(st_transform(readRDS(zi_path), 4326))
-    hits <- lengths(st_intersects(defo, zi_geom, sparse = TRUE)) > 0
-    if (!any(hits)) {
-      message(sprintf("  %s: 0 poligonos", codigo_zi))
-      return(invisible(NULL))
+    ids_zi_ce <- leer_objectids_rds(
+      resolver_archivo_defo(file.path(root, "data/deforestacion_ACR_BSM.rds"))
+    )
+
+    # ACR01 = Cordillera Escalera, ACR21 = Bosques de Shunté y Mishollo
+    # Polígonos del RDS CE se exportan como ZI; el shapefile aporta el complemento ACR.
+    sub_ce <- data[data$anp_codi == "ACR01", ]
+    if (nrow(sub_ce) > 0) {
+      if (length(ids_zi_ce) > 0) {
+        sub_ce <- sub_ce[!sub_ce$OBJECTID %in% ids_zi_ce, ]
+      }
+      if (nrow(sub_ce) > 0) {
+        layer <- armonizar_columnas_defo(sub_ce, "ACR_CE", "acr")
+        agregar_capa("ACR_CE", layer)
+        message(sprintf("  OK ACR_CE (shapefile \\ ZI_CE): %d poligonos", nrow(layer)))
+      }
     }
-    layer <- armonizar_columnas_defo(defo[hits, ], codigo_zi, "zi")
-    agregar_capa(codigo_zi, layer)
-    message(sprintf("  OK %s (ZI San Martin): %d poligonos", codigo_zi, nrow(layer)))
   }, error = function(e) {
-    message(sprintf("  ERROR %s: %s", codigo_zi, e$message))
+    message(sprintf("  ERROR San Martin ACR: %s", e$message))
   })
 }
 
@@ -194,9 +212,13 @@ for (par in loreto_shps) {
   cargar_shp_loreto(par$shp, par$acr, par$zi)
 }
 
-# --- San Martín: shapefile completo ---
-message("Cargando San Martin desde shapefile...")
-cargar_shp_san_martin()
+# --- San Martín: ZI desde RDS reales + ACR desde shapefile (complemento) ---
+message("Cargando San Martin ZI desde RDS (deforestacion_ACR_BSM + datadeforestacion_ACR_CE)...")
+cargar_sm_zi_desde_rds()
+message("Cargando San Martin ACR_BSM desde RDS (datadeforestacion_ACR_CE)...")
+cargar_sm_acr_bsm_desde_rds()
+message("Cargando San Martin ACR_CE desde shapefile (poligonos fuera de RDS ZI_CE)...")
+cargar_sm_acr_desde_shapefile()
 
 # --- Cusco: archivos .rds ---
 archivos_defo_acr_cusco <- list(
@@ -219,11 +241,6 @@ message("Cargando deforestacion ZI (Cusco)...")
 for (nm in names(archivos_defo_zi)) {
   cargar_capa_rds(nm, archivos_defo_zi[[nm]], "zi")
 }
-
-# San Martín: ZI no viene en anp_codi; se obtiene de polígonos dentro de geometría ZI
-message("Extrayendo ZI San Martin desde poligonos reales + geometria ZI...")
-extraer_zi_sm_espacial("ZI_BSM", "ACR_BSM", "data/geometrias_zi/ZI_Bosques_de_Shunté_y_Mishollo.rds")
-extraer_zi_sm_espacial("ZI_CE", "ACR_CE", "data/geometrias_zi/ZI_Cordillera_Escalera.rds")
 
 if (length(capas) == 0) {
   stop("No se cargo ninguna capa de deforestacion.")
