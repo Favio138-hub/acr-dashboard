@@ -63,6 +63,35 @@ cusco_chu <- tribble(
   "Cusco", "Chuyapi Urusayhua", 2024, 9.539998
 )
 
+# CUSCO - Q'eros Kosñipata
+cusco_qk <- tribble(
+  ~Region, ~ACR, ~Anio, ~Deforestacion_ha,
+  "Cusco", "Q'eros Kosñipata", 2001, 26.80698620364,
+  "Cusco", "Q'eros Kosñipata", 2002, 36.45650011184,
+  "Cusco", "Q'eros Kosñipata", 2003, 53.30276872259,
+  "Cusco", "Q'eros Kosñipata", 2004, 10.14384571214,
+  "Cusco", "Q'eros Kosñipata", 2005, 26.03538516531,
+  "Cusco", "Q'eros Kosñipata", 2006, 63.09860030619,
+  "Cusco", "Q'eros Kosñipata", 2007, 56.10853887732,
+  "Cusco", "Q'eros Kosñipata", 2008, 14.38933333937,
+  "Cusco", "Q'eros Kosñipata", 2009, 7.11429802968,
+  "Cusco", "Q'eros Kosñipata", 2010, 35.80451961323,
+  "Cusco", "Q'eros Kosñipata", 2011, 29.21208121511,
+  "Cusco", "Q'eros Kosñipata", 2012, 2.5199991,
+  "Cusco", "Q'eros Kosñipata", 2013, 2.1599997,
+  "Cusco", "Q'eros Kosñipata", 2014, 13.85999788922,
+  "Cusco", "Q'eros Kosñipata", 2015, 7.82999952515,
+  "Cusco", "Q'eros Kosñipata", 2016, 12.0600002704,
+  "Cusco", "Q'eros Kosñipata", 2017, 95.17447907798,
+  "Cusco", "Q'eros Kosñipata", 2018, 59.37535773846,
+  "Cusco", "Q'eros Kosñipata", 2019, 0.9000009,
+  "Cusco", "Q'eros Kosñipata", 2020, 15.57996100536,
+  "Cusco", "Q'eros Kosñipata", 2021, 7.19999772878,
+  "Cusco", "Q'eros Kosñipata", 2022, 24.5866294471,
+  "Cusco", "Q'eros Kosñipata", 2023, 1.6199994,
+  "Cusco", "Q'eros Kosñipata", 2024, 0.54000062928
+)
+
 # SAN MARTÍN - Cordillera Escalera
 sm_ce <- tribble(
   ~Region, ~ACR, ~Anio, ~Deforestacion_ha,
@@ -245,6 +274,7 @@ library(dplyr)
 datos_temporales_reales <- bind_rows(
   cusco_chq,
   cusco_chu,
+  cusco_qk,
   sm_ce,
   sm_bsm,
   loreto_aa,
@@ -259,6 +289,7 @@ datos_temporales_reales <- datos_temporales_reales %>%
     ACR_codigo = case_when(
       ACR == "Choquequirao" ~ "ACR_CHQ",
       ACR == "Chuyapi Urusayhua" ~ "ACR_CHU",
+      ACR == "Q'eros Kosñipata" ~ "ACR_QK",
       ACR == "Cordillera Escalera" ~ "ACR_CE",
       ACR == "Bosques de Shunté y Mishollo" ~ "ACR_BSM",
       ACR == "Ampiyacu Apayacu" ~ "ACR_AA",

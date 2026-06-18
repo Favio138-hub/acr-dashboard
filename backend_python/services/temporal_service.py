@@ -13,8 +13,9 @@ from services.filtros_config import ACR_OPCIONES_POR_DEPTO
 
 ACR_NAME_TO_CODE = {
     "Choquequirao": "ACR_CHQ",
-    "Chuyapi Urusayhua": "ACR_CHU",
-    "Cordillera Escalera": "ACR_CE",
+  "Chuyapi Urusayhua": "ACR_CHU",
+  "Q'eros Kosñipata": "ACR_QK",
+  "Cordillera Escalera": "ACR_CE",
     "Bosques de Shunté y Mishollo": "ACR_BSM",
     "Ampiyacu Apayacu": "ACR_AA",
     "Alto Nanay Pintuyacu Chambira": "ACR_ANPCH",
