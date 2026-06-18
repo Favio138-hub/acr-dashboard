@@ -1,4 +1,4 @@
-/* Reportes y Descargas — ui.R tab 3 + server.R modales/descargas */
+/* Reportes y Descargas — galería con miniaturas ligeras + carga diferida */
 const Reportes = (() => {
   const MAPAS = {
     loreto: [
@@ -72,9 +72,22 @@ const Reportes = (() => {
     ],
   };
 
+  const rendered = new Set();
+  let activeDepto = "loreto";
+
+  function thumbSrc(img) {
+    const name = decodeURIComponent(img.split("/").pop() || "");
+    return `/mapas/thumbs/${encodeURIComponent(name)}`;
+  }
+
   function cardHtml(m) {
+    const thumb = thumbSrc(m.img);
     return `<div class="card-mapa-nueva">
-      <div class="card-mapa-thumb"><img src="${m.img}" alt="${m.titulo}" loading="lazy"/></div>
+      <div class="card-mapa-thumb">
+        <div class="card-mapa-skeleton" aria-hidden="true"></div>
+        <img src="${thumb}" alt="${m.titulo}" loading="lazy" decoding="async"
+             data-full="${m.img}" class="card-mapa-img"/>
+      </div>
       <div class="card-mapa-body">
         <h5><i class="fas fa-leaf"></i> ${m.titulo}</h5>
         <p class="card-mapa-fecha"><i class="fas fa-calendar"></i> Actualizado: ${m.fecha}</p>
@@ -90,20 +103,41 @@ const Reportes = (() => {
     </div>`;
   }
 
-  function renderGalleries() {
-    Object.entries(MAPAS).forEach(([depto, items]) => {
-      const el = document.getElementById(`mapas-${depto}`);
-      if (!el) return;
-      el.innerHTML = items.map(cardHtml).join("");
-      el.classList.toggle("hidden", depto !== "loreto");
-    });
+  function bindThumbLoad(img) {
+    const hideSkeleton = () => {
+      img.classList.add("loaded");
+      img.parentElement?.querySelector(".card-mapa-skeleton")?.classList.add("hidden");
+    };
+    if (img.complete) hideSkeleton();
+    else {
+      img.addEventListener("load", hideSkeleton, { once: true });
+      img.addEventListener("error", () => {
+        img.src = img.dataset.full || img.src;
+        hideSkeleton();
+      }, { once: true });
+    }
+  }
+
+  function renderDepartment(depto) {
+    if (rendered.has(depto)) return;
+    const el = document.getElementById(`mapas-${depto}`);
+    const items = MAPAS[depto];
+    if (!el || !items) return;
+    el.innerHTML = items.map(cardHtml).join("");
+    el.querySelectorAll(".card-mapa-img").forEach(bindThumbLoad);
+    rendered.add(depto);
+  }
+
+  function showDepartment(depto) {
+    activeDepto = depto;
+    document.querySelectorAll(".map-gallery-section").forEach((s) => s.classList.add("hidden"));
+    renderDepartment(depto);
+    document.getElementById(`mapas-${depto}`)?.classList.remove("hidden");
   }
 
   function bindEvents() {
     document.getElementById("filtro_depto_mapas")?.addEventListener("change", (e) => {
-      document.querySelectorAll(".map-gallery-section").forEach((s) => s.classList.add("hidden"));
-      const el = document.getElementById(`mapas-${e.target.value}`);
-      if (el) el.classList.remove("hidden");
+      showDepartment(e.target.value);
     });
 
     document.getElementById("mapas-galleries")?.addEventListener("click", (e) => {
@@ -133,8 +167,9 @@ const Reportes = (() => {
   }
 
   function init() {
-    renderGalleries();
     bindEvents();
+    const sel = document.getElementById("filtro_depto_mapas");
+    showDepartment(sel?.value || "loreto");
   }
 
   return { init };

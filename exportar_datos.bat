@@ -39,6 +39,13 @@ echo [2/2] Poligonos ACR y ZI (GeoJSON)...
 if !ERRORLEVEL! NEQ 0 goto :error
 
 echo.
+echo [3/3] Miniaturas de mapas (galeria Reportes)...
+python scripts\generate_map_thumbs.py
+if !ERRORLEVEL! NEQ 0 (
+    echo [AVISO] No se generaron thumbs. Instale Python + Pillow o ejecute: python scripts\generate_map_thumbs.py
+)
+
+echo.
 echo ========================================
 echo   EXPORTACION COMPLETADA
 echo   Ahora ejecute: iniciar.bat

@@ -90,7 +90,6 @@ async function bootstrapDashboard() {
   showLoading("Cargando filtros y datos del mapa…");
   initYearFilters();
   await loadAcrOptions();
-  Reportes.init();
   Tendencias.init();
   Modals.bindRegionCards();
   await refreshDashboard();
@@ -105,6 +104,10 @@ document.querySelectorAll(".nav-tabs button").forEach((btn) => {
     qs(`#tab-${btn.dataset.tab}`).classList.add("active");
     if (btn.dataset.tab === "dashboard") {
       setTimeout(() => AcrMap.init()?.invalidateSize(), 250);
+    }
+    if (btn.dataset.tab === "reportes" && !window._reportesReady) {
+      window._reportesReady = true;
+      Reportes.init();
     }
   });
 });

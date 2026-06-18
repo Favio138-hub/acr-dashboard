@@ -32,12 +32,25 @@ const Modals = (() => {
     root.innerHTML = `<div class="modal-overlay" id="modal-overlay">
       <div class="modal-dialog modal-dialog-xl">
         <h3 style="margin:0 0 1rem;color:#1a4d2e"><i class="fas fa-map"></i> ${titulo}</h3>
-        <div class="modal-map-wrap"><img src="${src}" alt="${titulo}" style="width:100%;height:auto;display:block;border-radius:8px"/></div>
+        <div class="modal-map-wrap">
+          <div class="modal-map-loading"><i class="fas fa-spinner fa-spin"></i> Cargando mapa en alta resolución…</div>
+          <img id="modal-map-img" alt="${titulo}" style="width:100%;height:auto;display:none;border-radius:8px"/>
+        </div>
         <div style="display:flex;gap:10px;margin-top:1rem;flex-wrap:wrap">
           <a href="${src}" target="_blank" class="btn" style="background:#2c5f7d;color:#fff;text-decoration:none"><i class="fas fa-external-link-alt"></i> Abrir en pestaña nueva</a>
           <button type="button" class="btn btn-block" id="modal-close" style="flex:1;max-width:200px">Cerrar</button>
         </div>
       </div></div>`;
+    const img = document.getElementById("modal-map-img");
+    const loading = root.querySelector(".modal-map-loading");
+    img.onload = () => {
+      img.style.display = "block";
+      if (loading) loading.style.display = "none";
+    };
+    img.onerror = () => {
+      if (loading) loading.textContent = "No se pudo cargar la imagen.";
+    };
+    img.src = src;
     document.getElementById("modal-close").onclick = close;
     document.getElementById("modal-overlay").onclick = (e) => {
       if (e.target.id === "modal-overlay") close();

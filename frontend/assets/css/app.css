@@ -498,15 +498,40 @@ body {
   box-shadow: 0 8px 20px rgba(0,0,0,.15);
 }
 .card-mapa-thumb {
+  position: relative;
   width: 100%;
   height: 200px;
-  background: #f5f5f5;
+  background: #eef2f3;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
-.card-mapa-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.card-mapa-skeleton {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #eef2f3 0%, #f8f9fa 50%, #eef2f3 100%);
+  background-size: 200% 100%;
+  animation: thumb-shimmer 1.2s ease-in-out infinite;
+}
+.card-mapa-skeleton.hidden { display: none; }
+@keyframes thumb-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.card-mapa-thumb img {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.card-mapa-thumb img.loaded { opacity: 1; }
+.modal-map-loading {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #666;
+  font-size: 15px;
+}
 .card-mapa-body { padding: 20px; }
 .card-mapa-body h5 { margin: 0 0 8px; color: #1a4d2e; font-weight: 700; }
 .card-mapa-fecha { margin: 0 0 15px; color: #666; font-size: 13px; }
