@@ -1,0 +1,14 @@
+# Segundo ping desfasado (minutos 2,7,12…) por si el cron principal se retrasa.
+name: Keep Render awake (offset)
+
+on:
+  schedule:
+    - cron: "2,7,12,17,22,27,32,37,42,47,52,57 * * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping dashboard health
+        run: curl -fsS --max-time 120 "https://acr-dashboard-5iqz.onrender.com/api/health"

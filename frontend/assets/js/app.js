@@ -86,7 +86,13 @@ function showOfflineBanner() {
 
 async function bootstrapDashboard() {
   showLoading("Conectando con el servidor…");
-  await apiGet("/api/health");
+  try {
+    await apiGet("/api/health");
+  } catch (err) {
+    hideLoading();
+    showOfflineBanner();
+    throw err;
+  }
   showLoading("Cargando filtros y datos del mapa…");
   initYearFilters();
   await loadAcrOptions();
@@ -94,6 +100,18 @@ async function bootstrapDashboard() {
   await RegionInsights.load();
   await refreshDashboard();
   hideLoading();
+  startServerHeartbeat();
+}
+
+/** Mientras la pestaña está abierta, evita que Render duerma (complemento al ping externo). */
+function startServerHeartbeat() {
+  if (window._heartbeatStarted) return;
+  window._heartbeatStarted = true;
+  const ping = () => {
+    if (document.visibilityState !== "visible") return;
+    fetch("/api/health", { cache: "no-store" }).catch(() => {});
+  };
+  setInterval(ping, 8 * 60 * 1000);
 }
 
 document.querySelectorAll(".nav-tabs button").forEach((btn) => {
