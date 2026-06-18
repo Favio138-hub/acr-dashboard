@@ -1,10 +1,11 @@
-/* Reportes y Descargas — galería con miniaturas ligeras + carga diferida */
+/* Reportes y Descargas — miniaturas ligeras para Loreto, San Martín y Cusco */
 const Reportes = (() => {
   const MAPAS = {
     loreto: [
       {
         id: "aa",
         titulo: "ACR Ampiyacu Apayacu",
+        thumb: "/mapas/thumbs/aa.jpg",
         img: "/mapas/MAPA_ACR_AA_page-0001.jpg",
         pdf: "/api/descargas/mapa/aa",
         fecha: "Noviembre 2025",
@@ -12,6 +13,7 @@ const Reportes = (() => {
       {
         id: "anpch",
         titulo: "ACR Alto Nanay",
+        thumb: "/mapas/thumbs/anpch.jpg",
         img: "/mapas/MAPA_ACR_ANPCH_page-0001.jpg",
         pdf: "/api/descargas/mapa/anpch",
         fecha: "Noviembre 2025",
@@ -19,6 +21,7 @@ const Reportes = (() => {
       {
         id: "ctt",
         titulo: "ACR Tamshiyacu Tahuayo",
+        thumb: "/mapas/thumbs/ctt.jpg",
         img: "/mapas/MAPA_ACR_CTT_page-0001.jpg",
         pdf: "/api/descargas/mapa/ctt",
         fecha: "Noviembre 2025",
@@ -26,6 +29,7 @@ const Reportes = (() => {
       {
         id: "mk",
         titulo: "ACR Maijuna Kichwa",
+        thumb: "/mapas/thumbs/mk.jpg",
         img: "/mapas/MAPA_ACR_MK_page-0001.jpg",
         pdf: "/api/descargas/mapa/mk",
         fecha: "Noviembre 2025",
@@ -35,6 +39,7 @@ const Reportes = (() => {
       {
         id: "boshumi",
         titulo: "ACR Bosques de Shunté y Mishollo",
+        thumb: "/mapas/thumbs/boshumi.jpg",
         img: `/mapas/${encodeURIComponent("25NOV17_Mapa_de_deforestación_en_ACR_BOSHUMI_y_su_ZI_A2.jpg")}`,
         pdf: "/api/descargas/mapa/boshumi",
         fecha: "Enero 2026",
@@ -42,6 +47,7 @@ const Reportes = (() => {
       {
         id: "ce",
         titulo: "ACR Cordillera Escalera",
+        thumb: "/mapas/thumbs/ce.jpg",
         img: `/mapas/${encodeURIComponent("25NOV17_Mapa_de_deforestación_en_ACR_CE_y_su_ZI_A2.jpg")}`,
         pdf: "/api/descargas/mapa/ce",
         fecha: "Enero 2026",
@@ -51,6 +57,7 @@ const Reportes = (() => {
       {
         id: "chq",
         titulo: "ACR Choquequirao",
+        thumb: "/mapas/thumbs/chq.jpg",
         img: "/mapas/MAPA_CHOQUE_DEF_page-0001.jpg",
         pdf: "/api/descargas/mapa/chq",
         fecha: "Noviembre 2025",
@@ -58,6 +65,7 @@ const Reportes = (() => {
       {
         id: "chu",
         titulo: "ACR Chuyapi Urusayhua",
+        thumb: "/mapas/thumbs/chu.jpg",
         img: "/mapas/MAPA_CHUYAPI_ANEXO2_page-0001.jpg",
         pdf: "/api/descargas/mapa/chu",
         fecha: "Noviembre 2025",
@@ -65,6 +73,7 @@ const Reportes = (() => {
       {
         id: "qk",
         titulo: "ACR Q'eros Kosñipata",
+        thumb: "/mapas/thumbs/qk.jpg",
         img: "/mapas/MAPA_QEROS_ANEXO3_page-0001.jpg",
         pdf: "/api/descargas/mapa/qk",
         fecha: "Noviembre 2025",
@@ -72,21 +81,14 @@ const Reportes = (() => {
     ],
   };
 
-  const rendered = new Set();
-  let activeDepto = "loreto";
-
-  function thumbSrc(img) {
-    const name = decodeURIComponent(img.split("/").pop() || "");
-    return `/mapas/thumbs/${encodeURIComponent(name)}`;
-  }
+  const DEPTOS = ["loreto", "sanmartin", "cusco"];
 
   function cardHtml(m) {
-    const thumb = thumbSrc(m.img);
     return `<div class="card-mapa-nueva">
       <div class="card-mapa-thumb">
         <div class="card-mapa-skeleton" aria-hidden="true"></div>
-        <img src="${thumb}" alt="${m.titulo}" loading="lazy" decoding="async"
-             data-full="${m.img}" class="card-mapa-img"/>
+        <img src="${m.thumb}" alt="${m.titulo}" loading="lazy" decoding="async"
+             class="card-mapa-img"/>
       </div>
       <div class="card-mapa-body">
         <h5><i class="fas fa-leaf"></i> ${m.titulo}</h5>
@@ -108,28 +110,40 @@ const Reportes = (() => {
       img.classList.add("loaded");
       img.parentElement?.querySelector(".card-mapa-skeleton")?.classList.add("hidden");
     };
-    if (img.complete) hideSkeleton();
+    if (img.complete && img.naturalWidth > 0) hideSkeleton();
     else {
       img.addEventListener("load", hideSkeleton, { once: true });
       img.addEventListener("error", () => {
-        img.src = img.dataset.full || img.src;
+        img.alt = "Vista previa no disponible";
         hideSkeleton();
       }, { once: true });
     }
   }
 
   function renderDepartment(depto) {
-    if (rendered.has(depto)) return;
     const el = document.getElementById(`mapas-${depto}`);
     const items = MAPAS[depto];
-    if (!el || !items) return;
+    if (!el || !items || el.dataset.rendered === "1") return;
     el.innerHTML = items.map(cardHtml).join("");
     el.querySelectorAll(".card-mapa-img").forEach(bindThumbLoad);
-    rendered.add(depto);
+    el.dataset.rendered = "1";
+  }
+
+  function renderAllDepartments() {
+    DEPTOS.forEach(renderDepartment);
+  }
+
+  function prefetchThumbs() {
+    DEPTOS.flatMap((d) => MAPAS[d]).forEach((m) => {
+      const link = document.createElement("link");
+      link.rel = "prefetch";
+      link.as = "image";
+      link.href = m.thumb;
+      document.head.appendChild(link);
+    });
   }
 
   function showDepartment(depto) {
-    activeDepto = depto;
     document.querySelectorAll(".map-gallery-section").forEach((s) => s.classList.add("hidden"));
     renderDepartment(depto);
     document.getElementById(`mapas-${depto}`)?.classList.remove("hidden");
@@ -168,6 +182,8 @@ const Reportes = (() => {
 
   function init() {
     bindEvents();
+    prefetchThumbs();
+    renderAllDepartments();
     const sel = document.getElementById("filtro_depto_mapas");
     showDepartment(sel?.value || "loreto");
   }
