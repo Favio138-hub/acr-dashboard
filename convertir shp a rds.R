@@ -151,11 +151,12 @@ if ("anp_codi" %in% names(shp)) {
     for (codigo_acr in acrs_unicos) {
       shp_acr <- shp %>% filter(anp_codi == codigo_acr)
       
-      # Determinar nombre del archivo según el código
-      if (grepl("BSM|SHUNTE|SHUNTE", codigo_acr, ignore.case = TRUE)) {
+      # Determinar nombre del archivo según el código (ACR01/ACR02 en shapefile SM)
+      codigo_str <- as.character(codigo_acr)
+      if (grepl("ACR02|BSM|SHUNTE|MISHOLLO", codigo_str, ignore.case = TRUE)) {
         archivo_salida <- "deforestacion_ACR_BSM.rds"
         cat("  • ACR Bosques de Shunté:", nrow(shp_acr), "polígonos\n")
-      } else if (grepl("CE|ESCALERA", codigo_acr, ignore.case = TRUE)) {
+      } else if (grepl("ACR01|CE|ESCALERA", codigo_str, ignore.case = TRUE)) {
         archivo_salida <- "deforestacion_ACR_CE.rds"
         cat("  • ACR Cordillera Escalera:", nrow(shp_acr), "polígonos\n")
       } else {

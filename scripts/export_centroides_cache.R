@@ -67,10 +67,14 @@ archivos_defo_acr <- list(
   ACR_ANPCH = resolver_archivo_defo(file.path(root, "data/deforestacion_ACR_ANPCH.rds")),
   ACR_CTT = resolver_archivo_defo(file.path(root, "data/deforestacion_ACR_CTT.rds")),
   ACR_MK = resolver_archivo_defo(file.path(root, "data/deforestacion_ACR_MK.rds")),
-  ACR_BSM = resolver_archivo_defo(file.path(root, "data/deforestacion_ACR_BSM.rds")),
+  # Nota: los .rds de San Martín están con nombres invertidos respecto al territorio.
+  # deforestacion_ACR_BSM.rds → polígonos en zona CE (lat ~-6); datadeforestacion_ACR_CE.rds → zona BSM (lat ~-8).
+  ACR_BSM = resolver_archivo_defo(
+    file.path(root, "data/datadeforestacion_ACR_CE.rds"),
+    file.path(root, "data/deforestacion_ACR_CE.rds")
+  ),
   ACR_CE = resolver_archivo_defo(
-    file.path(root, "data/deforestacion_ACR_CE.rds"),
-    file.path(root, "data/datadeforestacion_ACR_CE.rds")
+    file.path(root, "data/deforestacion_ACR_BSM.rds")
   ),
   ACR_CHQ = resolver_archivo_defo(file.path(root, "data/deforestacion_ACR_CHQ.rds")),
   ACR_CHU = resolver_archivo_defo(file.path(root, "data/deforestacion_ACR_CHU.rds")),

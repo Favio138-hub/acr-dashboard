@@ -224,9 +224,9 @@ archivos_defo_acr <- list(
   ACR_CTT = "data/deforestacion_ACR_CTT.rds",
   ACR_MK = "data/deforestacion_ACR_MK.rds",
   
-  # SAN MARTÍN
-  ACR_BSM = "data/deforestacion_ACR_BSM.rds",
-  ACR_CE = resolver_archivo_defo("data/deforestacion_ACR_CE.rds", "data/datadeforestacion_ACR_CE.rds"),
+  # SAN MARTÍN (archivos .rds con nombres invertidos — ver scripts/export_centroides_cache.R)
+  ACR_BSM = resolver_archivo_defo("data/datadeforestacion_ACR_CE.rds", "data/deforestacion_ACR_CE.rds"),
+  ACR_CE = "data/deforestacion_ACR_BSM.rds",
   
   # CUSCO
   ACR_CHQ = "data/deforestacion_ACR_CHQ.rds",
