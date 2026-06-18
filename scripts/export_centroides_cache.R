@@ -244,6 +244,27 @@ for (nm in names(archivos_defo_zi)) {
   cargar_capa_rds(nm, archivos_defo_zi[[nm]], "zi")
 }
 
+# --- Parches 2025 (GeoJSON exportados desde GDB) ---
+patch_dir_2025 <- file.path(root, "data", "incoming", "2025")
+if (dir.exists(patch_dir_2025)) {
+  message("Cargando parches deforestacion 2025...")
+  patch_files <- list.files(patch_dir_2025, pattern = "\\.geojson$", full.names = TRUE)
+  for (pf in patch_files) {
+    codigo <- sub("\\.geojson$", "", basename(pf))
+    tipo <- if (grepl("^ZI_", codigo)) "zi" else "acr"
+    tryCatch({
+      data <- st_read(pf, quiet = TRUE)
+      sf_use_s2(FALSE)
+      data <- st_make_valid(st_transform(data, 4326))
+      layer <- armonizar_columnas_defo(data, codigo, tipo)
+      agregar_capa(codigo, layer)
+      message(sprintf("  OK patch 2025 %s: %d poligonos", codigo, nrow(layer)))
+    }, error = function(e) {
+      message(sprintf("  ERROR patch %s: %s", codigo, e$message))
+    })
+  }
+}
+
 if (length(capas) == 0) {
   stop("No se cargo ninguna capa de deforestacion.")
 }

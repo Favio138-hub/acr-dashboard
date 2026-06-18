@@ -15,7 +15,7 @@ COLORES_COMPARATIVA = [
 def analizar_tendencias(
     tipo_analisis: str = "general",
     acr_seleccion: list[str] | None = None,
-    rango_anios: tuple[int, int] = (2001, 2024),
+    rango_anios: tuple[int, int] = (2001, 2025),
     mostrar_tendencia: bool = True,
 ) -> dict:
     df = _load()
@@ -36,7 +36,7 @@ def analizar_tendencias(
         agg["ACR_codigo"] = "TOTAL"
         agg["Cambio_Pct"] = _pct_change(agg["Deforestacion_ha"].values)
         series = [_serie_from_df(agg, "Deforestación", "#1a4d2e", mostrar_tendencia)]
-        titulo = "Tendencia de Deforestación (2001-2024)"
+        titulo = "Tendencia de Deforestación (2001-2025)"
         return {"tipo": tipo_analisis, "titulo": titulo, "series": series}
 
     if tipo_analisis == "individual" and acr_seleccion:

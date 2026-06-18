@@ -1,0 +1,36 @@
+{
+  "anno": 2025,
+  "total_poligonos": 5704,
+  "por_codigo": {
+    "ACR_AA": 30,
+    "ACR_ANPCH": 102,
+    "ACR_BSM": 14,
+    "ACR_CE": 229,
+    "ACR_CHQ": 23,
+    "ACR_CHU": 21,
+    "ACR_CTT": 82,
+    "ACR_MK": 273,
+    "ACR_QK": 3,
+    "ZI_AA": 298,
+    "ZI_ANPCH": 508,
+    "ZI_CE": 3388,
+    "ZI_CTT": 418,
+    "ZI_MK": 315
+  },
+  "hectareas_por_codigo": {
+    "ACR_AA": 3.8448,
+    "ACR_ANPCH": 10.0172,
+    "ACR_BSM": 52.9331,
+    "ACR_CE": 247.8,
+    "ACR_CHQ": 0.0,
+    "ACR_CHU": 0.0,
+    "ACR_CTT": 10.2355,
+    "ACR_MK": 45.7963,
+    "ACR_QK": 0.0,
+    "ZI_AA": 69.12,
+    "ZI_ANPCH": 91.53,
+    "ZI_CE": 932.13,
+    "ZI_CTT": 63.0,
+    "ZI_MK": 65.97
+  }
+}

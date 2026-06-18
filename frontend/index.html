@@ -34,7 +34,7 @@
     <div class="hero-red">Conservación de la biodiversidad y lucha contra el cambio climático</div>
     <div class="hero-blue">
       <h2>Monitoreo de la deforestación en Áreas de Conservación Regional de la Amazonía Peruana</h2>
-      <p>En el marco de la asistencia técnica del <strong>Programa GFP Subnacional de la Cooperación Económica Suiza – SECO</strong>, implementado por el <strong>Basel Institute on Governance</strong>, y en coordinación con los Gobiernos Regionales de Loreto, San Martín y Cusco, se desarrolló el <strong>Dashboard de Línea Base de Deforestación de nueve Áreas de Conservación Regional</strong>, basado en la evaluación de información satelital de 24 años (2001 – 2024).</p>
+      <p>En el marco de la asistencia técnica del <strong>Programa GFP Subnacional de la Cooperación Económica Suiza – SECO</strong>, implementado por el <strong>Basel Institute on Governance</strong>, y en coordinación con los Gobiernos Regionales de Loreto, San Martín y Cusco, se desarrolló el <strong>Dashboard de Línea Base de Deforestación de nueve Áreas de Conservación Regional</strong>, basado en la evaluación de información satelital de 25 años (2001 – 2025).</p>
     </div>
 
     <div class="layout-dashboard">
@@ -62,7 +62,7 @@
           <span class="year-range-sep">–</span>
           <select id="anno_hasta" aria-label="Año hasta"></select>
         </div>
-        <p id="anno-range-label" class="year-range-hint">Periodo: 2001 – 2024</p>
+        <p id="anno-range-label" class="year-range-hint">Periodo: 2001 – 2025</p>
         <div id="filter-info" class="filter-info"></div>
         <button type="button" id="btn-limpiar" class="btn btn-warning btn-block hidden"><i class="fas fa-eraser"></i> Limpiar Filtros</button>
       </aside>
@@ -79,7 +79,7 @@
             <i class="kpi-bg-icon fas fa-minus" aria-hidden="true"></i>
             <p class="number">—</p>
             <p class="label">VARIACIÓN ANUAL</p>
-            <span class="sub"><i class="sub-icon fas fa-minus"></i> <span class="sub-text">2024 vs 2023</span></span>
+            <span class="sub"><i class="sub-icon fas fa-minus"></i> <span class="sub-text">2025 vs 2024</span></span>
           </div>
           <div id="kpi-porcentaje" class="value-box">
             <p class="number">—</p>
@@ -169,7 +169,7 @@
       <h3><i class="fas fa-satellite"></i> 2. Fuentes de Información y Datos</h3>
       <ul class="metodologia-list">
         <li><strong>Fuente primaria:</strong> Plataforma <a href="https://geobosques.minam.gob.pe" target="_blank" rel="noopener">GeoBosques</a> del Ministerio del Ambiente (MINAM)</li>
-        <li><strong>Período temporal:</strong> 2001-2024 (24 años de serie histórica)</li>
+        <li><strong>Período temporal:</strong> 2001-2025 (25 años de serie histórica)</li>
         <li><strong>Resolución espacial:</strong> 30 metros (imágenes Landsat 7 ETM+, Landsat 8 OLI/TIRS)</li>
         <li><strong>Frecuencia de actualización:</strong> Anual, con alertas trimestrales</li>
         <li><strong>Cobertura geográfica:</strong> 9 ACRs en 3 departamentos (Loreto, San Martín, Cusco)</li>
@@ -200,7 +200,7 @@
       </ul>
       <hr />
       <h3><i class="fas fa-chart-line"></i> 5. Análisis de Tendencias</h3>
-      <p class="metodologia-p">Se implementó un modelo de <strong>regresión lineal simple</strong> para identificar tendencias temporales de deforestación en el período 2001-2024. El modelo permite:</p>
+      <p class="metodologia-p">Se implementó un modelo de <strong>regresión lineal simple</strong> para identificar tendencias temporales de deforestación en el período 2001-2025. El modelo permite:</p>
       <ul class="metodologia-list">
         <li>Cuantificar la tasa anual promedio de cambio (hectáreas/año)</li>
         <li>Proyectar escenarios tendenciales a 5 años (2025-2029)</li>
@@ -284,7 +284,7 @@
     <div class="hero-red">Análisis de Tendencias Temporales</div>
     <div class="hero-blue">
       <h2>Análisis histórico de deforestación en ACRs</h2>
-      <p>Análisis histórico de la deforestación en las ACRs del Programa GFP Subnacional (2001-2024). Visualización de tendencias temporales y análisis de patrones de deforestación basados en series de tiempo.</p>
+      <p>Análisis histórico de la deforestación en las ACRs del Programa GFP Subnacional (2001-2025). Visualización de tendencias temporales y análisis de patrones de deforestación basados en series de tiempo.</p>
     </div>
     <div class="layout-dashboard">
       <aside class="well-panel">
@@ -299,9 +299,9 @@
           <label for="tend-acr">Seleccionar ACR(s):</label>
           <select id="tend-acr" multiple></select>
         </div>
-        <label>Rango de Años: <span id="tend-rango-label">2001 – 2024</span></label>
-        <input type="range" id="tend-anio-min" min="2001" max="2024" value="2001" />
-        <input type="range" id="tend-anio-max" min="2001" max="2024" value="2024" />
+        <label>Rango de Años: <span id="tend-rango-label">2001 – 2025</span></label>
+        <input type="range" id="tend-anio-min" min="2001" max="2025" value="2001" />
+        <input type="range" id="tend-anio-max" min="2001" max="2025" value="2025" />
         <label><input type="checkbox" id="tend-mostrar-linea" checked /> Mostrar línea de tendencia</label>
         <button type="button" id="btn-analizar-tend" class="btn btn-success btn-block"><i class="fas fa-search"></i> Generar Análisis</button>
       </aside>

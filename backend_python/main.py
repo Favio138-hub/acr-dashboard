@@ -207,7 +207,7 @@ def tendencias_analisis(
     tipo_analisis: str = Query("general"),
     acr: list[str] | None = Query(None),
     anio_min: int = Query(2001),
-    anio_max: int = Query(2024),
+    anio_max: int = Query(2025),
     mostrar_tendencia: bool = Query(True),
 ) -> dict:
     """Equivalente a mod_prediccion.R tras clic en Generar Análisis."""

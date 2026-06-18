@@ -6,11 +6,11 @@ const state = {
   ambito: "",
   acrs: [],
   annoDesde: 2001,
-  annoHasta: 2024,
+  annoHasta: 2025,
 };
 
 const ANNO_MIN = 2001;
-const ANNO_MAX = 2024;
+const ANNO_MAX = 2025;
 
 const fmt = (n) =>
   new Intl.NumberFormat("es-PE", { maximumFractionDigits: 0 }).format(Math.round(n || 0));

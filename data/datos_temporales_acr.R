@@ -31,7 +31,8 @@ cusco_chq <- tribble(
   "Cusco", "Choquequirao", 2021, 13.167394,
   "Cusco", "Choquequirao", 2022, 5.4,
   "Cusco", "Choquequirao", 2023, 28.130017,
-  "Cusco", "Choquequirao", 2024, 9.540001
+  "Cusco", "Choquequirao", 2024, 9.540001,
+  "Cusco", "Choquequirao", 2025, 0.0
 )
 
 # CUSCO - Chuyapi Urusayhua
@@ -60,7 +61,8 @@ cusco_chu <- tribble(
   "Cusco", "Chuyapi Urusayhua", 2021, 51.829305,
   "Cusco", "Chuyapi Urusayhua", 2022, 24.097296,
   "Cusco", "Chuyapi Urusayhua", 2023, 30.897646,
-  "Cusco", "Chuyapi Urusayhua", 2024, 9.539998
+  "Cusco", "Chuyapi Urusayhua", 2024, 9.539998,
+  "Cusco", "Chuyapi Urusayhua", 2025, 0.0
 )
 
 # CUSCO - Q'eros Kosñipata
@@ -89,7 +91,8 @@ cusco_qk <- tribble(
   "Cusco", "Q'eros Kosñipata", 2021, 7.19999772878,
   "Cusco", "Q'eros Kosñipata", 2022, 24.5866294471,
   "Cusco", "Q'eros Kosñipata", 2023, 1.6199994,
-  "Cusco", "Q'eros Kosñipata", 2024, 0.54000062928
+  "Cusco", "Q'eros Kosñipata", 2024, 0.54000062928,
+  "Cusco", "Q'eros Kosñipata", 2025, 0.0
 )
 
 # SAN MARTÍN - Cordillera Escalera
@@ -118,7 +121,8 @@ sm_ce <- tribble(
   "San Martín", "Cordillera Escalera", 2021, 61.98,
   "San Martín", "Cordillera Escalera", 2022, 71.42,
   "San Martín", "Cordillera Escalera", 2023, 73.28,
-  "San Martín", "Cordillera Escalera", 2024, 86.37
+  "San Martín", "Cordillera Escalera", 2024, 86.37,
+  "San Martín", "Cordillera Escalera", 2025, 247.8
 )
 
 # SAN MARTÍN - Bosques de Shunté y Mishollo
@@ -147,7 +151,8 @@ sm_bsm <- tribble(
   "San Martín", "Bosques de Shunté y Mishollo", 2021, 4.17,
   "San Martín", "Bosques de Shunté y Mishollo", 2022, 17.73,
   "San Martín", "Bosques de Shunté y Mishollo", 2023, 52.42,
-  "San Martín", "Bosques de Shunté y Mishollo", 2024, 309.66
+  "San Martín", "Bosques de Shunté y Mishollo", 2024, 309.66,
+  "San Martín", "Bosques de Shunté y Mishollo", 2025, 52.9331
 )
 
 # LORETO - Ampiyacu Apayacu
@@ -176,7 +181,8 @@ loreto_aa <- tribble(
   "Loreto", "Ampiyacu Apayacu", 2021, 1.849475092,
   "Loreto", "Ampiyacu Apayacu", 2022, 0.872474989,
   "Loreto", "Ampiyacu Apayacu", 2023, 0.359638861,
-  "Loreto", "Ampiyacu Apayacu", 2024, 23.87093358
+  "Loreto", "Ampiyacu Apayacu", 2024, 23.87093358,
+  "Loreto", "Ampiyacu Apayacu", 2025, 3.8448
 )
 
 # LORETO - Alto Nanay Pintuyacu Chambira
@@ -205,7 +211,8 @@ loreto_anpch <- tribble(
   "Loreto", "Alto Nanay Pintuyacu Chambira", 2021, 23.9078403,
   "Loreto", "Alto Nanay Pintuyacu Chambira", 2022, 0.270177779,
   "Loreto", "Alto Nanay Pintuyacu Chambira", 2023, 14.76044411,
-  "Loreto", "Alto Nanay Pintuyacu Chambira", 2024, 0.788552079
+  "Loreto", "Alto Nanay Pintuyacu Chambira", 2024, 0.788552079,
+  "Loreto", "Alto Nanay Pintuyacu Chambira", 2025, 10.0172
 )
 
 # LORETO - Comunal Tamshiyacu Tahuayo
@@ -234,7 +241,8 @@ loreto_ctt <- tribble(
   "Loreto", "Comunal Tamshiyacu Tahuayo", 2021, 1.259618446,
   "Loreto", "Comunal Tamshiyacu Tahuayo", 2022, 7.476903644,
   "Loreto", "Comunal Tamshiyacu Tahuayo", 2023, 15.38786354,
-  "Loreto", "Comunal Tamshiyacu Tahuayo", 2024, 1.979505919
+  "Loreto", "Comunal Tamshiyacu Tahuayo", 2024, 1.979505919,
+  "Loreto", "Comunal Tamshiyacu Tahuayo", 2025, 10.2355
 )
 
 # LORETO - Maijuna Kichwa
@@ -263,7 +271,8 @@ loreto_mk <- tribble(
   "Loreto", "Maijuna Kichwa", 2021, 9.797357646,
   "Loreto", "Maijuna Kichwa", 2022, 60.99394764,
   "Loreto", "Maijuna Kichwa", 2023, 2.755235246,
-  "Loreto", "Maijuna Kichwa", 2024, 3.426514298
+  "Loreto", "Maijuna Kichwa", 2024, 3.426514298,
+  "Loreto", "Maijuna Kichwa", 2025, 45.7963
 )
 
 # ========================================

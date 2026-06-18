@@ -1,5 +1,5 @@
 """
-Datos temporales — utils/datos_temporales_acr.R (serie 2001-2024).
+Datos temporales — utils/datos_temporales_acr.R (serie 2001-2025).
 """
 from __future__ import annotations
 
@@ -95,7 +95,7 @@ def calcular_variacion_anual(
     filtros: list[str] | None = None,
     departamento: str = "todos",
 ) -> dict:
-    """Variación 2024 vs 2023 según filtros activos (ACR, departamento o total)."""
+    """Variación 2025 vs 2024 según filtros activos (ACR, departamento o total)."""
     sub = _subset_temporal(filtros, departamento)
     if sub.empty:
         return {
@@ -105,9 +105,9 @@ def calcular_variacion_anual(
             "color": "#f39c12",
         }
 
-    y2023 = float(sub[sub["Anio"] == 2023]["Deforestacion_ha"].sum())
     y2024 = float(sub[sub["Anio"] == 2024]["Deforestacion_ha"].sum())
-    variacion = 0.0 if y2023 == 0 else round(((y2024 - y2023) / y2023) * 100, 1)
+    y2025 = float(sub[sub["Anio"] == 2025]["Deforestacion_ha"].sum())
+    variacion = 0.0 if y2024 == 0 else round(((y2025 - y2024) / y2024) * 100, 1)
 
     if variacion > 0:
         return {
