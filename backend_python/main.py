@@ -29,6 +29,7 @@ from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
 from core.serializers import dataframe_to_records
+from services.centroides_stats_service import graficos_desde_centroides, kpis_desde_centroides
 from services.dashboard_service import datos_para_graficos
 from services.decretos_service import ACR_DECRETOS, obtener_info_decreto
 from core.rds_bridge import load_centroides_deforestacion
@@ -156,26 +157,19 @@ def kpis_endpoint(
     departamento: str = Query("todos"),
     ambito: str = Query("acr"),
     acr: list[str] | None = Query(None),
+    anno_desde: int | None = Query(None, ge=2001, le=2030),
+    anno_hasta: int | None = Query(None, ge=2001, le=2030),
 ) -> dict:
     est = _APP_STATE["estadisticas"]
-    kpis = generar_resumen_kpis(est, filtros=acr, depto=departamento, ambito=ambito)
+    cent = _get_centroides_cached()
+    kpis = kpis_desde_centroides(
+        cent, departamento, ambito, acr, anno_desde=anno_desde, anno_hasta=anno_hasta
+    )
+    if kpis is None:
+        kpis = generar_resumen_kpis(est, filtros=acr, depto=departamento, ambito=ambito)
     kpis["variacion_anual"] = calcular_variacion_anual(acr, departamento)
     ambito_eff = ambito if ambito else "acr"
-    if ambito_eff == "zi":
-        datos = obtener_datos_filtrados(est, acr, departamento, "zi")
-    elif ambito_eff == "ambos":
-        datos = pd.concat(
-            [
-                obtener_datos_filtrados(est, acr, departamento, "acr"),
-                obtener_datos_filtrados(est, acr, departamento, "zi"),
-            ],
-            ignore_index=True,
-        )
-    else:
-        datos = obtener_datos_filtrados(est, acr, departamento, "acr")
-    total_ha = float(datos["Total"].sum()) if not datos.empty else 0
-    antropico_ha = float(datos["Antropico"].sum()) if not datos.empty else 0
-    kpis["porcentaje_antropico_kpi"] = round((antropico_ha / total_ha) * 100, 1) if total_ha > 0 else 0
+    kpis["porcentaje_antropico_kpi"] = kpis.get("pct_antropico", 0)
     kpis["texto_ambito_kpi"] = (
         "DE ORIGEN ANTRÓPICO" if ambito_eff == "acr"
         else "EN ZONA DE INFLUENCIA" if ambito_eff == "zi"
@@ -189,9 +183,17 @@ def graficos_endpoint(
     departamento: str = Query("todos"),
     ambito: str = Query(""),
     acr: list[str] | None = Query(None),
+    anno_desde: int | None = Query(None, ge=2001, le=2030),
+    anno_hasta: int | None = Query(None, ge=2001, le=2030),
 ) -> dict:
     est = _APP_STATE["estadisticas"]
     amb = ambito if ambito else None
+    cent = _get_centroides_cached()
+    graficos = graficos_desde_centroides(
+        cent, departamento, amb or "acr", acr, anno_desde=anno_desde, anno_hasta=anno_hasta
+    )
+    if graficos is not None:
+        return graficos
     return datos_para_graficos(est, acr, departamento, amb)
 
 

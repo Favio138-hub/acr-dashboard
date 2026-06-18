@@ -89,7 +89,7 @@ def load_centroides_deforestacion() -> pd.DataFrame:
     1) CSV en data/cache (generado por R)
     2) Si no existe, intenta generarlo con Rscript
     """
-    empty = pd.DataFrame(columns=["lon", "lat", "codigo", "tipo", "area", "anno"])
+    empty = pd.DataFrame(columns=["lon", "lat", "codigo", "tipo", "area", "anno", "causa"])
 
     if CACHE_CSV.exists() and CACHE_CSV.stat().st_size > 100:
         df = pd.read_csv(CACHE_CSV)

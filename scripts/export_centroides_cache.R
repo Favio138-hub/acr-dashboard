@@ -29,6 +29,7 @@ armonizar_columnas_defo <- function(data, nombre_codigo, tipo = "acr") {
     md_sup = 0,
     md_exa = "N/A",
     md_zonif = "N/A",
+    md_causa = "N/A",
     stringsAsFactors = FALSE
   )
 
@@ -49,6 +50,7 @@ armonizar_columnas_defo <- function(data, nombre_codigo, tipo = "acr") {
   else if ("AREA_HA" %in% names(data)) data_armonizado$md_sup <- as.numeric(data$AREA_HA)
 
   if ("md_exa" %in% names(data)) data_armonizado$md_exa <- as.character(data$md_exa)
+  if ("md_causa" %in% names(data)) data_armonizado$md_causa <- as.character(data$md_causa)
   if ("md_zonif" %in% names(data)) data_armonizado$md_zonif <- as.character(data$md_zonif)
   else if ("zonificacion" %in% names(data)) data_armonizado$md_zonif <- as.character(data$zonificacion)
 
@@ -259,6 +261,7 @@ centroides_df <- data.frame(
   tipo = deforestacion_completa$TIPO,
   area = deforestacion_completa$md_sup,
   anno = deforestacion_completa$md_anno,
+  causa = deforestacion_completa$md_causa,
   stringsAsFactors = FALSE
 )
 
